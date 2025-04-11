@@ -78,7 +78,7 @@ def setup_openai_api():
 
 def execute_api_call(client, prompt_content, target_url):
     """
-    Execute an API call to OpenAI with web search enabled using high context.
+    Execute an API call to OpenAI with web search enabled.
     
     Args:
         client: The OpenAI client
@@ -92,13 +92,11 @@ def execute_api_call(client, prompt_content, target_url):
     
     try:
         # Using the responses.create method with web search as shown in the documentation
-        # and setting search_context_size to "high" for better search results
         response = client.responses.create(
             model="gpt-4o",
             tools=[
                 {
-                    "type": "web_search_preview",
-                    "search_context_size": "high"  # Use high context for better results
+                    "type": "web_search_preview"
                 }
             ],
             input=f"{prompt_content}\nTarget:\n{target_url}"
@@ -120,15 +118,41 @@ def parse_response(response):
     Returns:
         dict: A dictionary containing the subjects and body
     """
-    # Get the response text directly from the output_text property
-    response_text = response.output_text
+    # Extract the text from the response
+    response_text = ""
+    
+    try:
+        # Try to extract text based on the response structure from the documentation
+        for item in response.output:
+            if hasattr(item, 'role') and item.role == 'assistant':
+                for content_item in item.content:
+                    if hasattr(content_item, 'text'):
+                        response_text = content_item.text
+                        break
+        
+        # If text is still empty, try an alternative approach
+        if not response_text:
+            for item in response.output:
+                if hasattr(item, 'content'):
+                    for content_item in item.content:
+                        if hasattr(content_item, 'text'):
+                            response_text += content_item.text
+    except Exception as e:
+        print(f"Error extracting text from response: {str(e)}")
+        # Try to print the response structure for debugging
+        try:
+            print(f"Response structure: {response}")
+            print(f"Output type: {type(response.output)}")
+            print(f"Output contents: {response.output}")
+        except:
+            pass
     
     # Print the response for debugging
     print(f"\nResponse received (first 200 chars):\n{response_text[:200]}...\n")
     
     # Extract the subjects and body using regex
     subjects = []
-    subject_pattern = r"Subject (?:Option )?(\d+): (.*?)(?:\n|$)"
+    subject_pattern = r"Subject Option (\d+): (.*?)(?:\n|$)"
     body_pattern = r"Hey \[Target\],([\s\S]*?)(?:\nCall me anytime|$)"
     
     # Extract subjects
@@ -189,6 +213,35 @@ def openai_call(df: pd.DataFrame, prompt, client):
             # Call OpenAI API with prompt, target URL
             response = execute_api_call(client, prompt, target_dict["target_url"])
             
+            # Debug the response structure
+            print("Response Object Properties:")
+            for attr in dir(response):
+                if not attr.startswith('_'):
+                    try:
+                        attr_value = getattr(response, attr)
+                        print(f"  {attr}: {type(attr_value)}")
+                    except:
+                        print(f"  {attr}: <unable to access>")
+                        
+            # Try to print the output structure
+            if hasattr(response, 'output'):
+                print("\nOutput Structure:")
+                for i, item in enumerate(response.output):
+                    print(f"  Item {i} type: {type(item)}")
+                    print(f"  Item {i} attributes: {dir(item)}")
+                    
+                    # Try to access content if it exists
+                    if hasattr(item, 'content'):
+                        print(f"  Item {i} content: {item.content}")
+                    
+                    # Try to get message content if it's a message
+                    if hasattr(item, 'role') and item.role == 'assistant':
+                        print(f"  Found assistant message")
+                        if hasattr(item, 'content'):
+                            for content_item in item.content:
+                                if hasattr(content_item, 'text'):
+                                    print(f"  Message text: {content_item.text[:100]}...")
+            
             # Parse the response to extract subjects and body
             parsed_data = parse_response(response)
             
@@ -205,7 +258,7 @@ def openai_call(df: pd.DataFrame, prompt, client):
             # Add subjects to the DataFrame
             for i, subject in enumerate(parsed_data["subjects"]):
                 df.at[index, f"Subject {i+1}"] = subject
-                print(f"Subject {i+1}: {subject}")
+                print(f"Subject {i+1}: {subject[:50]}...")
             
             # Add body to the DataFrame
             df.at[index, "Body"] = body_text
@@ -251,4 +304,3 @@ if __name__ == "__main__":
     # Save the updated DataFrame to a CSV file
     updated_df.to_csv(output_file, index=False)
     print(f"Updated DataFrame saved to {output_file}")
-

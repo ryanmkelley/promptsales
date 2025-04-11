@@ -19,14 +19,10 @@ def process_growth_list_csv(input_file_path):
     # Load the CSV file into a DataFrame
     df = pd.read_csv(input_file_path)
     
-    # Add the six new columns with empty values
+    # Add new columns with empty values
     new_columns = [
-        "AI Copy Generation Endpoint", 
-        "Subject 1", 
-        "Subject 2", 
-        "Subject 3",
-        "Subject 4", 
-        "Body"
+        "AI Research Endpoint",
+        "Research Data"
     ]
     
     for column in new_columns:
@@ -76,89 +72,98 @@ def setup_openai_api():
     print("OpenAI API configured successfully")
     return client
 
-def execute_api_call(client, prompt_content, target_url):
+def target_research_search(client, prompt_file_path, target_url, model="gpt-4o"):
     """
-    Execute an API call to OpenAI with web search enabled using high context.
+    Execute a research API call to OpenAI with web search enabled.
     
     Args:
         client: The OpenAI client
-        prompt_content (str): The content to use as a prompt
+        prompt_file_path (str): Path to the file containing the research prompt
         target_url (str): The URL to search
+        model (str): The OpenAI model to use for research
         
     Returns:
-        The response from the OpenAI API
+        The response from the OpenAI API with the researched content
     """
-    print(f"\nMaking OpenAI API call for target URL: {target_url}")
+    print(f"\nPerforming research for target URL: {target_url} using model {model}")
+    
+    # Load the research prompt from file
+    prompt_content = load_text_file(prompt_file_path)
+    if not prompt_content:
+        print("Failed to load research prompt. Cannot proceed.")
+        return None
     
     try:
-        # Using the responses.create method with web search as shown in the documentation
-        # and setting search_context_size to "high" for better search results
+        # Using the responses.create method with web search
         response = client.responses.create(
-            model="gpt-4o",
+            model=model,
             tools=[
                 {
                     "type": "web_search_preview",
-                    "search_context_size": "high"  # Use high context for better results
+                    "search_context_size": "high"
                 }
             ],
             input=f"{prompt_content}\nTarget:\n{target_url}"
         )
         
-        print("OpenAI API call completed successfully")
+        print("Research API call completed successfully")
         return response
     except Exception as e:
-        print(f"Error making OpenAI API call: {str(e)}")
+        print(f"Error making research API call: {str(e)}")
         raise e
 
-def parse_response(response):
+def extract_text_from_response(response):
     """
-    Parse the response from the OpenAI API to extract subjects and body.
+    Extract the text content from an OpenAI API response.
     
     Args:
         response: The response from the OpenAI API
         
     Returns:
-        dict: A dictionary containing the subjects and body
+        str: The extracted text from the response
     """
-    # Get the response text directly from the output_text property
-    response_text = response.output_text
+    response_text = ""
+    
+    try:
+        # Try to extract text based on the response structure from the documentation
+        for item in response.output:
+            if hasattr(item, 'role') and item.role == 'assistant':
+                for content_item in item.content:
+                    if hasattr(content_item, 'text'):
+                        response_text = content_item.text
+                        break
+        
+        # If text is still empty, try an alternative approach
+        if not response_text:
+            for item in response.output:
+                if hasattr(item, 'content'):
+                    for content_item in item.content:
+                        if hasattr(content_item, 'text'):
+                            response_text += content_item.text
+    except Exception as e:
+        print(f"Error extracting text from response: {str(e)}")
+        # Try to print the response structure for debugging
+        try:
+            print(f"Response structure: {response}")
+            print(f"Output type: {type(response.output)}")
+            print(f"Output contents: {response.output}")
+        except:
+            pass
     
     # Print the response for debugging
     print(f"\nResponse received (first 200 chars):\n{response_text[:200]}...\n")
     
-    # Extract the subjects and body using regex
-    subjects = []
-    subject_pattern = r"Subject (?:Option )?(\d+): (.*?)(?:\n|$)"
-    body_pattern = r"Hey \[Target\],([\s\S]*?)(?:\nCall me anytime|$)"
-    
-    # Extract subjects
-    subject_matches = re.findall(subject_pattern, response_text)
-    for _, subject_text in subject_matches:
-        subjects.append(subject_text.strip())
-    
-    # Ensure we have exactly 4 subjects (pad with empty strings if needed)
-    while len(subjects) < 4:
-        subjects.append("")
-    
-    # Extract body
-    body_match = re.search(body_pattern, response_text)
-    body = body_match.group(1).strip() if body_match else ""
-    
-    print(f"Extracted {len(subjects)} subjects and body text of length {len(body)}")
-    
-    return {
-        "subjects": subjects[:4],
-        "body": body
-    }
+    return response_text
 
-def openai_call(df: pd.DataFrame, prompt, client):
+def research_companies(df, research_prompt_file, client, research_model="gpt-4o"):
     """
-    Process each row in the DataFrame, call OpenAI API, and update the DataFrame with results.
+    Process each row in the DataFrame to research the company using their URL.
     
     Args:
         df (pd.DataFrame): The DataFrame to process
-        prompt (str): The prompt template to use
+        research_prompt_file (str): Path to the research prompt file
         client: The OpenAI client
+        research_model (str): The model to use for research
         
     Returns:
         pd.DataFrame: The updated DataFrame
@@ -186,37 +191,28 @@ def openai_call(df: pd.DataFrame, prompt, client):
         print(f"CEO Name: {target_dict['ceo_name']}")
         
         try:
-            # Call OpenAI API with prompt, target URL
-            response = execute_api_call(client, prompt, target_dict["target_url"])
+            # Research the company
+            print("\nResearching company...")
+            research_response = target_research_search(client, research_prompt_file, target_dict["target_url"], model=research_model)
             
-            # Parse the response to extract subjects and body
-            parsed_data = parse_response(response)
+            if not research_response:
+                print(f"No research data obtained for row {index+1}. Skipping.")
+                continue
             
-            # Get the CEO's first name (first word in CEO Name)
-            ceo_first_name = target_dict["ceo_name"].split()[0] if target_dict["ceo_name"] else "[Target]"
-            print(f"Using CEO first name: {ceo_first_name}")
+            # Extract the research text from the response
+            research_text = extract_text_from_response(research_response)
             
-            # Replace [Target] with CEO's first name in the body
-            body_text = parsed_data["body"].replace("[Target]", ceo_first_name)
+            # Save the research data in the DataFrame
+            df.at[index, "AI Research Endpoint"] = research_model
+            df.at[index, "Research Data"] = research_text
+            print(f"Research data preview: {research_text[:150]}...")
             
-            # Update the DataFrame with the results
-            df.at[index, "AI Copy Generation Endpoint"] = "gpt-4o"
-            
-            # Add subjects to the DataFrame
-            for i, subject in enumerate(parsed_data["subjects"]):
-                df.at[index, f"Subject {i+1}"] = subject
-                print(f"Subject {i+1}: {subject}")
-            
-            # Add body to the DataFrame
-            df.at[index, "Body"] = body_text
-            print(f"Body preview: {body_text[:100]}...")
-            
-            # Save intermediate results after each successful row
-            df.to_csv(f"interim_results_{index+1}.csv", index=False)
-            print(f"Saved interim results to interim_results_{index+1}.csv")
+            # Save research results after each row
+            df.to_csv(f"research_results_{index+1}.csv", index=False)
+            print(f"Saved research results to research_results_{index+1}.csv")
             
             # Small delay to avoid rate limiting
-            print(f"Waiting for 3 seconds before next API call...")
+            print(f"Waiting for 3 seconds before next company...")
             time.sleep(3)
             
         except Exception as e:
@@ -229,26 +225,21 @@ def openai_call(df: pd.DataFrame, prompt, client):
 if __name__ == "__main__":
     # File paths
     input_file = "Test3 Growth List Startup Plan_usa_leads - Growth List Startup Plan_usa_leads.csv"
-    output_file = "Growth_List_copy.csv"
-    prompt_file = "CombinedPrompt.txt"  # File containing the prompt template
-    
+    output_file = "Growth_List_Research.csv"
+    research_prompt_file = "target_brief_prompt.txt"  # File containing the research prompt
     print(f"Starting processing with input file: {input_file}")
     
     # Process the CSV file
     df = process_growth_list_csv(input_file)
     print(f"DataFrame loaded with {len(df)} rows and {len(df.columns)} columns")
     
-    # Load the prompt template
-    prompt = load_text_file(prompt_file)
-    
     # Set up OpenAI API
     openai_client = setup_openai_api()
     print("OpenAI client initialized")
 
-    # Process the DataFrame with OpenAI API calls
-    updated_df = openai_call(df, prompt, openai_client)
+    # Only perform research on the companies
+    updated_df = research_companies(df, research_prompt_file, openai_client, research_model="gpt-4o")
     
     # Save the updated DataFrame to a CSV file
     updated_df.to_csv(output_file, index=False)
     print(f"Updated DataFrame saved to {output_file}")
-

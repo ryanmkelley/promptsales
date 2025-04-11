@@ -1,0 +1,44 @@
+Name,URL,Description,Industry,B2B or B2C,City,Country,Twitter (X),LinkedIn,Contact Email,Email Status,Funding Date,Funding Amount (in USD),Funding Type,CEO Name,CEO First Name,CEO Last Name,CEO Email,CEO Email Status,CEO Twitter (X),CEO Linkedin,Link to Funding Announcement,Number of Employees,Founding Year,Technologies,Monthly Website Visits,Monthly Website Visits Growth,IT Spend (in USD),Software Spend (in USD),Communications Spend (in USD),Services Spend (in USD),Other Hardware Spend (in USD),Other IT Spend (in USD),Top 5 Investors,Number of Lead Investors,Number of Investors,AI Research Endpoint,Research Data
+EvidenceCare,https://www.evidence.care/,EvidenceCare is an EHR-integrated clinical decision support platform that provides better care and optimizes clinician workflows.,Healthcare,B2B,Brentwood,United States,https://twitter.com/evidencecare,https://www.linkedin.com/company/evidence-care,info@evidence.care,valid,March 2025,unknown,Series B,Bo Bartholomew,Bo,Bartholomew,bo.bartholomew@evidence.care,valid,,https://www.linkedin.com/in/bo-bartholomew-1508091/,https://evidence.care/evidencecare-acquires-agathos/,11-50,2016.0,"AI, Other, Act-On, Marketing Automation, Amazon AWS, Hosting, Android, Frameworks and Programming Languages, Apache, Load Balancers, Docker, Other, DoubleClick, Ad Servers, DoubleClick Conversion, Advertising Networks, Google Analytics, Analytics and Tracking, Google Dynamic Remarketing, Retargeting, Google Font API, Fonts, Google Tag Manager, Tag Management, Hubspot, Marketing Automation, Linkedin Marketing Solutions, Advertising Networks, Microsoft Office 365, Other, Mobile Friendly, Other, OpenSSL, SSL Certificates, Outlook, Email Providers, Proofpoint, Security, Python, Frameworks and Programming Languages, React Redux, CSS and JavaScript Libraries, Remote, Other, Render, Other, Route 53, Domain Name Services, SAP, Customer Relationship Management, Salesforce, Customer Relationship Management, Vercel, Hosting, Wistia, Online Video Platforms, WordPress.org, CMS, ","5,538",-50.96%,"95,701","10,239","14,984","41,236","4,762","24,480","Jumpstart Capital, Rockmont Investments, Orlando Health Ventures, NueCura Partners, LLC",3,4,gpt-4o,"EvidenceCare is a Nashville-based company specializing in EHR-integrated clinical decision support software designed to enhance clinical workflows, improve patient care, and optimize hospital margins. ([evidence.care](https://evidence.care/?utm_source=openai))
+
+**Products:**
+
+1. **AdmissionCare®**: This tool assists physicians in making appropriate bed status decisions and documentation at the time of patient admission, aiming to increase revenue, reduce denials, and streamline workflows. ([evidence.care](https://evidence.care/admissioncare/?utm_source=openai))
+
+2. **CareGauge®**: Provides real-time visibility into care utilization, length of stay, lab and drug costs, and more, helping to reduce variable costs, unwarranted variation, and length of stay. ([evidence.care](https://evidence.care/evidencecare-named-fierce-healthcare-innovation-award-winner/?utm_source=openai))
+
+**Leadership Team:**
+
+- **Dr. Brian Fengler**: Founder and CEO. An emergency physician who founded EvidenceCare to address the need for accessible, evidence-based treatment guidelines at the point of care. ([businesswire.com](https://www.businesswire.com/news/home/20170515006420/en/EvidenceCare-Opens-Series-A-Raise-in-Collaboration-with-Auctus-Group?utm_source=openai))
+
+- **Bo Bartholomew**: CEO. ([evidence.care](https://evidence.care/evidencecare-ardent-partner-to-deliver-real-time-clinical-insight-in-the-ehr/?utm_source=openai))
+
+- **Kile Garrett**: VP of Business Development. ([evidencecare.breezy.hr](https://evidencecare.breezy.hr/?utm_source=openai))
+
+- **Kevin Yeager**: Sr. Director of Implementation. ([evidencecare.breezy.hr](https://evidencecare.breezy.hr/?utm_source=openai))
+
+- **John Waters**: VP of Operations. ([evidencecare.breezy.hr](https://evidencecare.breezy.hr/?utm_source=openai))
+
+**Current Hiring Status:**
+
+As of the latest available information, EvidenceCare does not have any open positions listed on their careers page. ([evidencecare.breezy.hr](https://evidencecare.breezy.hr/?utm_source=openai))
+
+**Company Achievements:**
+
+- Named one of the INC 5000 fastest-growing healthcare tech companies.
+
+- Recipient of multiple awards for innovative products and platform. ([evidence.care](https://evidence.care/evidencecare-named-fierce-healthcare-innovation-award-winner/?utm_source=openai))
+
+**Contact Information:**
+
+- **Address**: 155 Franklin Road, Suite 160, Brentwood, TN 37027, United States
+
+- **Phone**: 877-646-6846
+
+- **Email**: info@evidence.care ([discover.evidence.care](https://discover.evidence.care/contact?utm_source=openai))
+
+**Potential Synergies with Conifer Technologies LLC:**
+
+EvidenceCare's focus on integrating clinical decision support within EHR systems aligns with Conifer Technologies' expertise in developing technology products and services. While EvidenceCare's current offerings do not explicitly mention computer vision or IoT applications, their commitment to innovation in healthcare technology suggests potential interest in exploring these areas. Conifer's experience with computer vision, IoT devices, and partnerships with companies like Intel RealSense could offer valuable insights and collaboration opportunities, especially if EvidenceCare considers expanding into areas like real-time patient monitoring, medical imaging analysis, or other applications where computer vision and IoT intersect with digital health solutions. "
+Sonar,https://www.sonarmentalhealth.com,Sonar is a healthcare company focusing on the proactive identification and intervention of mental health challenges in youth.,"Healthcare, Mental Health",B2C,Mill Valley,United States,,https://www.linkedin.com/company/sonar-mental-health,support@sonarmentalhealth.com,accept_all_unverifiable,March 2025,"$2,400,000",Pre-Seed,Drew Barvir,Drew,Barvir,drew@sonarmentalhealth.com,valid,https://x.com/DrewJBarvir,https://www.linkedin.com/in/drewbarvir/,https://www.vcaonline.com/news/2025022406/sonar-secures-2-4m-to-address-teen-mental-health-crisis-at-scale/,1-10,,"Amazon AWS, Hosting, Amazon SES, Email Delivery, Basis, Advertising Networks, Circle, Financial Software, Cloudinary, Cloud Services, Facebook Custom Audiences, Retargeting, Facebook Login (Connect), Social Login, Facebook Widget, Widgets, Gmail, Email Providers, Google Apps, Other, Google Workspace, Cloud Services, Mobile Friendly, Other, Nginx, Load Balancers, Remote, Other, Route 53, Domain Name Services",837,5.28%,"23,870","7,582","3,572","3,572","2,076","4,152","Nina Capital, GSR Ventures, J4.Ventures",1,3,,
+SkyMirr,https://skymirr.com,SkyMirr provides revolutionary RF technology for broadband wireless communication and medical equipment applications.,Telecommunications,B2B,Satellite Beach,United States,,https://www.linkedin.com/company/skymirr-inc,sales@skymirr.com,valid,March 2025,"$7,300,000",Series A,Eric Jo,Eric,Jo,eric.jo@skymirr.com,valid,,https://www.linkedin.com/in/youngmin-jo-phd/,https://www.businesswire.com/news/home/20250226007243/en/SkyMirr-Secures-7.3M-Series-A-Investment-Led-by-Solyco-Capital,1-10,2021.0,"AI, Other, Apache, Load Balancers, Basis, Advertising Networks, Gmail, Email Providers, Google Apps, Other, Google Font API, Fonts, Google Tag Manager, Tag Management, Mobile Friendly, Other, Remote, Other, RingCentral, Widgets, WordPress.org, CMS, reCAPTCHA, Captcha",11800.00%,21.65%,"203,883","33,884","33,650","33,650","12,198","70,547",Solyco Capital,1,1,,
